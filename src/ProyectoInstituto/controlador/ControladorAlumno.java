@@ -2,6 +2,7 @@ package ProyectoInstituto.controlador;
 
 
 import ProyectoInstituto.modeloBBDD.Alumno;
+import ProyectoInstituto.modeloBBDD.Asignatura;
 import ProyectoInstituto.modeloBBDD.InstitutoDAO;
 
 import java.util.List;
@@ -32,4 +33,7 @@ public class ControladorAlumno {
          int resultado = InstitutoDAO.ingresarAlumno(alum);
          return resultado;
     }
+
+
+
 }

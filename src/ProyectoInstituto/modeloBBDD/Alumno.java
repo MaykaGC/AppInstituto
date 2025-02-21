@@ -2,7 +2,6 @@ package ProyectoInstituto.modeloBBDD;
 
 public class Alumno {
 
-
     private String nombre;
     private String direccion; 
     private String estadoMatricula;
@@ -38,9 +37,5 @@ public class Alumno {
     public void setEstadoMatricula(String estadoMatricula) {
         this.estadoMatricula = estadoMatricula;
     }
-
-
-
-
 
 }

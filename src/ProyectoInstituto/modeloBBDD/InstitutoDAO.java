@@ -14,41 +14,17 @@ public class InstitutoDAO extends ArrayList<Object> {
     }
 
     /* OPCIONES DE OPERACIONES EN LA BASE DE DATOS */
-    /*
-    Inserción de alumno
-    Inserción de asignatura
-    Inserción de matrícula
-    Listar alumnos (en orden alfabético)
-    Obtener matrículas del alumno
-    Obtener mejor y peor nota del alumno
-    Obtener la nota media del alumno*/
 
-
-    private static void insertarAsignatura(String nombre, int curso) {
-        try (Connection conn = connect()) {
-            String query = "INSERT INTO asignaturas (nombre, curso) VALUES (?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, nombre);
-            stmt.setInt(2, curso);
-            stmt.executeUpdate();
-            System.out.println("Asignatura insertada correctamente.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    //AGREGAR UN NUEVO ALUMNO EN LA BD
-
-    public static int ingresarAlumno(Alumno a) {
+    //INSERTAR ALUMNO
+    public static int ingresarAlumno(Alumno alum) {
         int resultado = 0;
         try (Connection conn = connect()) {
-            //insertamos en la base de datos directamente
-            String query = "INSERT INTO alumnos (nombre, direccion, estado_matricula) VALUES (?,?,?)";
+            //insertamos en la base de datos
+            String query = "INSERT INTO alumnos (nombre, direccion, estado_matricula) VALUES (?,?,?)";  //se ponen tantas interrogaciones como valores tengamos
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, a.getNombre());
-            stmt.setString(1, a.getDireccion());
-            stmt.setString(1, a.getEstadoMatricula());
+            stmt.setString(1, alum.getNombre());
+            stmt.setString(1, alum.getDireccion());
+            stmt.setString(1, alum.getEstadoMatricula());
             //Se usa para CRUD y retorna el numero de filas si es mayor de uno o igual "se ha insertado correctamente"
             //sino retorna un 0, es decir, no se ha insertado nada
             resultado = stmt.executeUpdate();
@@ -63,9 +39,27 @@ public class InstitutoDAO extends ArrayList<Object> {
 
     }
 
-    public static void insertarMatricula(int idAlumno, int idAsignatura, double nota) {
-
+    //INSERTAR ASIGNATURA
+    public static int insertarAsignatura(String nombre, int curso) {
+        int resultado = 0;
         try (Connection conn = connect()) {
+            String query = "INSERT INTO asignaturas (nombre, curso) VALUES (?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, nombre);
+            stmt.setInt(2, curso);
+            stmt.executeUpdate();
+            System.out.println("Asignatura insertada correctamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultado;
+    }
+
+
+    //INSERTAR MATRICULA
+    public static int insertarMatricula(int idAlumno, int idAsignatura, double nota) {
+       int resultado = 0;
+       try (Connection conn = connect()) {
             String query = "INSERT INTO matriculas (id_alumno, id_asignatura, nota) VALUES (?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, idAlumno);
@@ -76,7 +70,11 @@ public class InstitutoDAO extends ArrayList<Object> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+       return resultado;
     }
+
+
 
     //al hacer consultas debemos devolver objetos de la capa modelo
     //en la capa modelo estará Alumno
@@ -112,10 +110,11 @@ public class InstitutoDAO extends ArrayList<Object> {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                String nombre = rs.getString("nombreAsignatura");
-                double nota = rs.getDouble("nota");
+                int idAlumn = rs.getInt("idAlumno");
                 int idAsignatura = rs.getInt("id_asignatura");
-                Matricula mat = new Matricula(id, idAlumno, idAsignatura, nombre);
+                double nota = rs.getDouble("nota");
+
+                Matricula mat = new Matricula(nota, id, idAlumn, idAsignatura);
                 matriculas.add(mat);
             }
         } catch (SQLException e) {
@@ -143,6 +142,7 @@ public class InstitutoDAO extends ArrayList<Object> {
         return notas;
     }
 
+
     public static double obtenerNotaMedia(int idAlumno) {
         double notaMedia = 0.0;
 
@@ -161,6 +161,5 @@ public class InstitutoDAO extends ArrayList<Object> {
         }
         return notaMedia;
     }
-
 
 }

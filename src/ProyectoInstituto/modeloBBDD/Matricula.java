@@ -2,20 +2,43 @@ package ProyectoInstituto.modeloBBDD;
 
 public class Matricula {
 
-    private int id;
-    private int idAlumno;
-    private int idAsignatura;
-    private String nombre;
-    private double  nota;
 
-    public Matricula(double nota, int idAlumno, int id, int idAsignatura, String nombre) {
-        this.nota = nota;
-        this.id = id;
+    private int idAlumno;
+    private int id;
+    private double nota;
+
+    public Matricula(double v, int idAlumno, int id, double nota) {
         this.idAlumno = idAlumno;
-        this.idAsignatura = idAsignatura;
-        this.nombre = nombre;
+        this.id = id;
+        this.nota = nota;
     }
 
+
+    public int getIdAlumno() {
+        return idAlumno;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public double getNota() {
+        return nota;
+    }
+
+
+    public void setIdAlumno(int idAlumno) {
+        this.idAlumno = idAlumno;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNota(double nota) {
+        this.nota = nota;
+    }
+}
 
 
 
