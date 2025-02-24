@@ -5,9 +5,9 @@ public class Asignatura {
     String nombreAsignatura;
     int curso;
 
-    public Asignatura(String nombreAsignatura, int curso) {
+    public Asignatura(String nombreAsignatura, String curso) {
         this.nombreAsignatura = nombreAsignatura;
-        this.curso = curso;
+        this.curso = Integer.parseInt(String.valueOf(curso));
     }
 
     public String getNombreAsignatura() {

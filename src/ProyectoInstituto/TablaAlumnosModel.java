@@ -54,7 +54,7 @@ public class TablaAlumnosModel extends AbstractTableModel {
         return nombreColumnas.length;
     }
 
-    //Me devuleve el objeto que se encuentra en la fila y columna especificada
+    //Me devuelve el objeto que se encuentra en la fila y columna especificada
     //en la celda especificada
     //metodo que pinta en cada celda de la tabla el valor correspondiente del alumno
     //este me pinta las celdas de la tabla

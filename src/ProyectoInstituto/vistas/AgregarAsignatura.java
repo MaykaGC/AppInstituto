@@ -74,7 +74,7 @@ public class AgregarAsignatura extends JFrame {
         int curso = Integer.parseInt(txtCurso.getText());
 
 
-        int resultado = controlador.insertarAsignatura(nombreAsignatura, curso);
+        int resultado = controlador.insertarAsignatura(nombreAsignatura, String.valueOf(curso));
 
         if (resultado > 0) {
             JOptionPane.showMessageDialog(this, "Asignatura insertada con éxito.");

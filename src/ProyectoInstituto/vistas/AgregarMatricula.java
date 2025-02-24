@@ -12,6 +12,7 @@ public class AgregarMatricula extends JFrame {
     private JTextField txtidAlumno = new JTextField(20);
     private JTextField txtid = new JTextField(20);
     private JTextField txtNota = new JTextField(20);
+    private JTextField txtCurso = new JTextField(20);
     private JButton btnAceptar = new JButton("Aceptar");
     private JButton btnCancelar = new JButton("Cancelar");
 
@@ -38,6 +39,8 @@ public class AgregarMatricula extends JFrame {
         agregarComponente(panelFormularioAsignatura, txtid, 1, 1, gbc);
         agregarComponente(panelFormularioAsignatura, new JLabel("Nota:"), 0, 2, gbc);
         agregarComponente(panelFormularioAsignatura, txtNota, 1, 2, gbc);
+        agregarComponente(panelFormularioAsignatura, new JLabel("Curso"), 0,3, gbc);
+        agregarComponente(panelFormularioAsignatura, txtCurso, 1,2, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.add(btnAceptar);
@@ -69,11 +72,12 @@ public class AgregarMatricula extends JFrame {
 
     private void agregarMatricula() {
 
-        String nombreAlumno = txtidAlumno.getText();
-        int idAlumno = Integer.parseInt(txtid.getText());
+        int idAlumno = Integer.parseInt(txtidAlumno.getText());
+        int idAsignatura= Integer.parseInt(txtid.getText());
         float nota = Float.parseFloat(txtNota.getText());
+        int curso = Integer.parseInt(txtCurso.getText());
 
-        int resultado = controlador.insertarMatricula(Integer.parseInt(nombreAlumno), idAlumno, nota);
+        int resultado = controlador.insertarMatricula(idAlumno,idAsignatura, (int) nota, curso);
 
         if (resultado > 0) {
             JOptionPane.showMessageDialog(this, "Matrícula agregada con éxito.");

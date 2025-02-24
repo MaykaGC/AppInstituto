@@ -15,6 +15,31 @@ public class InstitutoDAO extends ArrayList<Object> {
 
     /* OPCIONES DE OPERACIONES EN LA BASE DE DATOS */
 
+
+    //al hacer consultas debemos devolver objetos de la capa modelo
+    //en la capa modelo estará Alumno
+    public static ArrayList<Alumno> selectAlumnos() {
+        ArrayList<Alumno> alumnos = new ArrayList<>();
+        try (Connection conn = connect()) {
+            String query = "SELECT * FROM alumnos ORDER BY nombre ASC";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            //resultset = conjunto de resultados, igual que cursores en android
+
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                String direccion = rs.getString("direccion");
+                String estado_matricula = rs.getString("estadoMatricula");
+                Alumno alumno = new Alumno(nombre, direccion, estado_matricula);
+                alumnos.add(alumno);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return alumnos;
+    }
+
     //INSERTAR ALUMNO
     public static int ingresarAlumno(Alumno alum) {
         int resultado = 0;
@@ -35,18 +60,53 @@ public class InstitutoDAO extends ArrayList<Object> {
 
             e.printStackTrace();
         }
-         return resultado;
+        return resultado;
 
     }
 
-    //INSERTAR ASIGNATURA
-    public static int insertarAsignatura(String nombre, int curso) {
+    //ELIMINAR ALUMNO
+    public static int eliminarAlumno(int idAlumno) throws SQLException {
         int resultado = 0;
         try (Connection conn = connect()) {
-            String query = "INSERT INTO asignaturas (nombre, curso) VALUES (?, ?)";
+            //Eliminamos de la base de datos
+            String query = "DELETE FROM alumnos where idAlumno = ?";
+
+
+        }
+        return resultado;
+
+    }
+
+    //SELECCIONAR ASIGNATURA
+    public static ArrayList<Asignatura> selectAsignatura() {
+        ArrayList<Asignatura> asignaturas = new ArrayList<>();
+        try (Connection conn = connect()) {
+            String query = "SELECT * FROM asignaturas ORDER BY nombre ASC";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, nombre);
-            stmt.setInt(2, curso);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String nombreAsignatura = rs.getString("nombreAsignatura");
+                String curso = rs.getString("curso");
+                Asignatura asignatura = new Asignatura(nombreAsignatura, curso);
+                asignaturas.add(asignatura);
+
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+        return asignaturas;
+    }
+
+    //INSERTAR ASIGNATURA
+    public static int insertarAsignatura(Asignatura asig) {
+        int resultado = 0;
+        try (Connection conn = connect()) {
+            String query = "INSERT INTO asignaturas (nombreAsignatura, curso) VALUES (?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, asig.getNombreAsignatura());
+            stmt.setInt(2, asig.getCurso());
             stmt.executeUpdate();
             System.out.println("Asignatura insertada correctamente.");
         } catch (SQLException e) {
@@ -56,29 +116,7 @@ public class InstitutoDAO extends ArrayList<Object> {
     }
 
 
-    //INSERTAR MATRICULA
-    public static int insertarMatricula(int idAlumno, int idAsignatura, double nota) {
-       int resultado = 0;
-       try (Connection conn = connect()) {
-            String query = "INSERT INTO matriculas (id_alumno, id_asignatura, nota) VALUES (?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setInt(1, idAlumno);
-            stmt.setInt(2, idAsignatura);
-            stmt.setDouble(3, nota);
-            stmt.executeUpdate();
-            System.out.println("Matrícula insertada correctamente.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-       return resultado;
-    }
-
-
-
-    //al hacer consultas debemos devolver objetos de la capa modelo
-    //en la capa modelo estará Alumno
-    public static ArrayList<Alumno> selectAlumnos() {
+    /*public static ArrayList<Alumno> selectAlumnos() {
         ArrayList<Alumno> alumnos = new ArrayList<>();
         try (Connection conn = connect()) {
             String query = "SELECT * FROM alumnos ORDER BY nombre ASC";
@@ -89,7 +127,7 @@ public class InstitutoDAO extends ArrayList<Object> {
             while (rs.next()) {
                 String nombre = rs.getString("nombre");
                 String direccion = rs.getString("direccion");
-                String estado_matricula= rs.getString("estadoMatricula");
+                String estado_matricula = rs.getString("estadoMatricula");
                 Alumno alumno = new Alumno(nombre, direccion, estado_matricula);
                 alumnos.add(alumno);
             }
@@ -98,23 +136,33 @@ public class InstitutoDAO extends ArrayList<Object> {
             e.printStackTrace();
         }
         return alumnos;
-    }
+    }*/
 
-    public static ArrayList<Matricula> selectMatriculas(int idAlumno) {
+
+
+
+
+    //SELECCIONAR MATRICULAS
+    public static ArrayList<Matricula> selectMatriculas(int idAlumno, int idAsignatura, int curso, double nota ) {
         ArrayList<Matricula> matriculas = new ArrayList<>();
         try (Connection conn = connect()) {
-            String query = "SELECT mat.id, asig.nombre AS nombreAsignatura, mat.nota, mat.id_asignatura FROM matriculas mat JOIN asignaturas asig ON mat.id_asignatura = asig.id WHERE mat.id_alumno = ?";
+            //String query = "SELECT mat.id, asig.nombre AS nombreAsignatura, mat.nota, mat.id_asignatura FROM matriculas mat JOIN asignaturas asig ON mat.id_asignatura = asig.id WHERE mat.id_alumno = ?";
+           String query = "SELECT matricula.id, alumno.nombre, b.nombre_asigntura, matricula.curso, matricula.curso, m.nota from matriculas" +
+                   "on  inner join alumnos a on m.idAlumno = a.idAlumno" +
+                   "inner join asignatura b on m.id_asignatura = b.idAsignatura";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, idAlumno);
+            stmt.setInt(2, idAsignatura);
+            stmt.setInt(3, curso);
+            stmt.setDouble(4, nota);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                int idAlumn = rs.getInt("idAlumno");
+                int idAlumno = rs.getInt("idAlumno");
                 int idAsignatura = rs.getInt("id_asignatura");
+                int curso = rs.getInt("curso");
                 double nota = rs.getDouble("nota");
-
-                Matricula mat = new Matricula(nota, id, idAlumn, idAsignatura);
+                Matricula mat = new Matricula(idAlumn, idAsignatura, curso, nota);
                 matriculas.add(mat);
             }
         } catch (SQLException e) {
@@ -122,6 +170,31 @@ public class InstitutoDAO extends ArrayList<Object> {
         }
         return matriculas;
     }
+
+
+
+
+
+
+    //INSERTAR MATRICULA
+    public static int insertarMatricula(int idAlumno, int idAsignatura, double nota, int curso) {
+        int resultado = 0;
+        try (Connection conn = connect()) {
+            String query = "INSERT INTO matriculas (id_Alumno, id_Asignatura, nota, curso) VALUES (?, ?, ?,?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, idAlumno);
+            stmt.setInt(2, idAsignatura);
+            stmt.setDouble(3, nota);
+            stmt.setInt(4, curso);
+            stmt.executeUpdate();
+            System.out.println("Matrícula insertada correctamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return resultado;
+    }
+
 
     public static double[] obtenerMejorPeorNota(int idAlumno) {
         double[] notas = new double[2];

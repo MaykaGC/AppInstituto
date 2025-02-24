@@ -8,9 +8,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-
-import static java.awt.SystemColor.menu;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -24,7 +21,17 @@ public class VentanaPrincipal extends JFrame {
 
 
     //sin el borderlayout la tabla no se adapta al total del ancho disponible
+    //Pintar la tabla de alumnos
     JPanel panelAlumnos = new JPanel(new BorderLayout());
+
+    //Pintar la tabla de asignatura
+    JPanel panelAsignaturas = new JPanel(new BorderLayout());
+
+    //Pintar la tabla de matrícula
+    JPanel panelMatriculas = new JPanel(new BorderLayout());
+
+
+    ImageIcon alumno = new ImageIcon("C:\\Users\\gonzalez.camar\\Desktop\\Multimedia 2ºT\\untitled\\src\\Imagenes\\img.png");
 
 
     //BARRA DE MENÚ
@@ -34,6 +41,8 @@ public class VentanaPrincipal extends JFrame {
     JMenu menuMatriculas = new JMenu("Matriculas");
     //este en su actionperformer lleva un formulario para que habra la pantalla de agregar alumno
     JMenuItem menuAgregarAlumno = new JMenuItem("Agregar alumno");
+    JMenuItem menuEliminarAlumno = new JMenuItem("Eliminar alumno");
+    JMenuItem menuActualizarAlumno = new JMenuItem("Editar alumno");
     JMenuItem menuAgregarAsignatura = new JMenuItem("Agregar asignatura");
     JMenuItem menuAgregarMatricula = new JMenuItem("Agregar matrícula");
 
@@ -47,10 +56,8 @@ public class VentanaPrincipal extends JFrame {
     //Ventana emergente de alumno
     private AgregarAlumnoVentana agregarAlumnoVentana = new AgregarAlumnoVentana();
 
-
     //Ventana emergente de asignatura
     private AgregarAsignatura agregarAsignaturaVentana = new AgregarAsignatura();
-
 
     //Ventana emergente de matrícula
     private AgregarMatricula agregarMatriculaVentana = new AgregarMatricula();
@@ -77,30 +84,29 @@ public class VentanaPrincipal extends JFrame {
         this.btnAccion1.setToolTipText("Botón 1");
         this.btnAccion2.setToolTipText("Botón 2");
         this.btnAccion3.setToolTipText("Botón 3");
+
         initMenu();
 
         inicarTablaAlumnos();
+
+        iniciarTablaAsignaturas();
 
         establecerPestanias();
     }
 
     //PANEL DE PESTAÑAS
     private void establecerPestanias() {
-        //primero hacemos una consultar a la base de datos
-        ;
-        inicarTablaAlumnos();
-        //panelAlumnos.add(new JLabel("Aquí irá la tabla de alumnos"));
-        pnPestanias.addTab("Alumnos", panelAlumnos);
-        //    pnPestanias.addTab("Alumnos", new ImageIcon(()), panelAlumnos);
-        //le puedo poner una imagen como arriab
-        //añadir alog para las otras 2 pestañas
-        JPanel panelAsiganturas = new JPanel();
-        panelAsiganturas.add(new JLabel("Aquí irá la table de asignaturas"));
-        pnPestanias.addTab("Asignaturas ", panelAsiganturas);
-        JPanel panelMatricula = new JPanel();
-        panelMatricula.add(new Label("Aquí ira la tabla matrícula. "));
-        pnPestanias.addTab("Matrículas", new ImageIcon(), panelMatricula);
 
+        inicarTablaAlumnos();
+
+        //Pestaña alumnos
+        pnPestanias.addTab("Alumnos", panelAlumnos);
+
+       //Pestaña asignaturas
+        pnPestanias.addTab("Asignaturas", panelAsignaturas);
+
+        //Pestaña matriculas
+        pnPestanias.addTab("Matrículas", panelMatriculas);
 
     }
 
@@ -111,6 +117,8 @@ public class VentanaPrincipal extends JFrame {
         barra.add(menuAsignatura);
         barra.add(menuMatriculas);
         menuAlumnos.add(menuAgregarAlumno);
+        menuAlumnos.add(menuActualizarAlumno);
+        menuAlumnos.add(menuEliminarAlumno);
         menuAgregarAlumno.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,6 +133,7 @@ public class VentanaPrincipal extends JFrame {
                 abrirVentanaAgregarAsignatura();
             }
         });
+
         menuMatriculas.add(menuAgregarMatricula);
         menuAgregarMatricula.addActionListener(new ActionListener() {
             @Override
@@ -156,7 +165,6 @@ public class VentanaPrincipal extends JFrame {
     }
 
 
-
     private void inicarTablaAlumnos() {
         //creamos la tabla a partir del modelo definido TablaAlumnosModel
         JTable tablaAlumnos = new JTable(new TablaAlumnosModel());
@@ -167,10 +175,27 @@ public class VentanaPrincipal extends JFrame {
     }
 
 
-    public static void main(String[] args) {
+    private void iniciarTablaAsignaturas(){
+        //Creamos la tabla a partir del modelo definido en TablaAsignaturaModel
+        JTable tablaAsignatura = new JTable(new TablaAsignaturaModel());
+        panelAsignaturas.add(new JScrollPane(tablaAsignatura), BorderLayout.CENTER);
+        tablaAsignatura.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        panelAsignaturas.setBorder(new EmptyBorder(10,10,10,10));
+    }
 
+    private void iniciarTablaMatriculas(){
+        //Creamos la tabla a partir del modelo definido en TablaMatriculaModel
+        JTable tablaMatriculas = new JTable(new TablaAsignaturaModel());
+        panelMatriculas.add(new JScrollPane(tablaMatriculas), BorderLayout.CENTER);
+        tablaMatriculas.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        panelMatriculas.setBorder(new EmptyBorder(10,10,10,10));
+    }
+
+
+
+    public static void main(String[] args) {
         VentanaPrincipal ventana = new VentanaPrincipal();
-        ventana.setTitle("Ejercicio con border layout");
+        ventana.setTitle("Colegio Salesianos");
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setVisible(true);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
